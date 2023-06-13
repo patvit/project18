@@ -1,5 +1,51 @@
+import time
+
 import requests
 import configparser
+from selenium import webdriver
+from selenium.webdriver import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+
+#Задача №3. Дополнительная (не обязательная)
+
+def selenuim_test():
+    config = configparser.ConfigParser()  # создаём объекта парсера
+    config.read("settings.ini")  # читаем конфиг
+
+    email = config["Токены"]["email"]
+    pwd = config["Токены"]["pwd"]
+
+
+    driver = webdriver.Chrome()
+    driver.get('https://passport.yandex.ru/auth/')
+    input_text = driver.find_element(By.ID, 'passp-field-login')
+    input_text.clear()
+    time.sleep(5)
+    input_text.send_keys(email)
+    time.sleep(5)
+    input_text.send_keys(Keys.RETURN)
+    time.sleep(10)
+    input_text = driver.find_element(By.ID, 'passp-field-passwd')
+    input_text.clear()
+    time.sleep(5)
+    input_text.send_keys(pwd)
+    time.sleep(5)
+    input_text.send_keys(Keys.RETURN)
+    time.sleep(10)
+    #input_text.send_keys(Keys.RETURN)
+    #time.sleep(10)
+
+    assert 'Авторизация' in driver.title
+    driver.close()
+    if 'Авторизация' in driver.title:
+        return True
+    else:
+        return False
+
+
+#Задача №2 Автотест API Яндекса
 
 def ya_test():
     tokenYA =''
@@ -31,13 +77,15 @@ class YaUploader:
         response = requests.put(files_url, headers=headers, params=params)
         return response.status_code
 
-
+#Задача №1 unit-tests
 def channel_stat():
     stats = {'facebook': 55, 'yandex': 120, 'vk': 115, 'google': 99, 'email': 42, 'ok': 98}
     num_max = max(stats.values())
     for i in stats.keys():
         if stats[i] == num_max:
             return i
+
+#Задача №1 unit-tests
 def uniq_geo():
     ids = {'user1': [213, 213, 213, 15, 213],
            'user2': [54, 54, 119, 119, 119],
@@ -73,7 +121,7 @@ directories = {'1': ['2207 876234', '11-2'], '2': ['10006'], '3': []}
 # p – people – команда, которая спросит номер документа и выведет имя человека, которому он принадлежит;
 
 
-#def command_p():
+#Задача №1 unit-tests
 def command_p(id_number):
     #id_number = input('Введите номер документа для поиска человека: ')
     exist = False
@@ -160,8 +208,9 @@ def main():
 
 
 if __name__ == '__main__':
+    selenuim_test()
     ya_test()
-    #channel_stat()
-    #uniq_geo()
-    #main()
+    channel_stat()
+    uniq_geo()
+    main()
 
